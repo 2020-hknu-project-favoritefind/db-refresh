@@ -1,0 +1,8 @@
+# 모듈
+node_modules/
+
+# 암호
+password.ts
+
+# 테스트 케이스
+TestCase.ts
