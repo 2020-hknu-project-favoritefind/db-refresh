@@ -1,6 +1,7 @@
 import Axios from "axios";
+import * as APIScheme from "./ApiInterface"
 
-export default class GetPlaceFromPublicAPI {
+export class GetPlaceFromPublicAPI {
     private key: string;
 
     public constructor(key: string) {
@@ -12,8 +13,8 @@ export default class GetPlaceFromPublicAPI {
      * @param page 페이지 위치 (기본 1)
      * @param size 페이지 당 요청 숫자 (기본 1000)
      */
-    public async PublicSportFacility(page = 1, size = 1000): Promise<object[]> {
-        let result: object[] = [];
+    public async PublicSportFacility(page = 1, size = 1000): Promise<APIScheme.GyeonggiAPIResponsePublicSports[]> {
+        let result: APIScheme.GyeonggiAPIResponsePublicSports[] = [];
         try {
             let res = await Axios.get(`https://openapi.gg.go.kr/PublicLivelihood?KEY=${this.key}&Type=json&pIndex=${page}&pSize=${size}`);
             result = res.data["PublicLivelihood"][1]["row"];
@@ -29,8 +30,8 @@ export default class GetPlaceFromPublicAPI {
      * @param page 페이지 위치 (기본 1)
      * @param size 페이지 당 요청 숫자 (기본 1000)
      */
-    public async PhysicalTrainingCentre(page = 1, size = 1000): Promise<object[]> {
-        let result: object[] = [];
+    public async PhysicalTrainingCentre(page = 1, size = 1000): Promise<APIScheme.GyeonggiAPIResponsePhysicalTraining[]> {
+        let result: APIScheme.GyeonggiAPIResponsePhysicalTraining[] = [];
         try {
             let res = await Axios.get(`https://openapi.gg.go.kr/PhysicalTraining?KEY=${this.key}&type=json&pIndex=${page}&pSize=${size}`);
             result = res.data["PhysicalTraining"][1]["row"];
@@ -46,8 +47,8 @@ export default class GetPlaceFromPublicAPI {
      * @param page 페이지 위치 (기본 1)
      * @param size 페이지 당 요청 숫자 (기본 1000)
      */
-    public async FishingCentre(page = 1, size = 1000): Promise<object[]> {
-        let result: object[] = [];
+    public async FishingCentre(page = 1, size = 1000): Promise<APIScheme.GyeonggiAPIResponseFishing[]> {
+        let result: APIScheme.GyeonggiAPIResponseFishing[] = [];
         try {
             let res = await Axios.get(`https://openapi.gg.go.kr/FISHPLCINFO?KEY=${this.key}&type=json&pIndex=${page}&pSize=${size}`);
             result = res.data["FISHPLCINFO"][1]["row"];
@@ -63,8 +64,8 @@ export default class GetPlaceFromPublicAPI {
      * @param page 페이지 위치 (기본 1)
      * @param size 페이지 당 요청 숫자 (기본 1000)
      */
-    public async DanceAcademy(page = 1, size = 1000): Promise<object[]> {
-        let result: object[] = [];
+    public async DanceAcademy(page = 1, size = 1000): Promise<APIScheme.GyeonggiAPIResponseDancingAcademy[]> {
+        let result: APIScheme.GyeonggiAPIResponseDancingAcademy[] = [];
         try {
             let res = await Axios.get(`https://openapi.gg.go.kr/DanceAcademy?KEY=${this.key}&type=json&pIndex=${page}&pSize=${size}`);
             result = res.data["DanceAcademy"][1]["row"];
@@ -79,9 +80,8 @@ export default class GetPlaceFromPublicAPI {
      * @param page 페이지 위치 (기본 1)
      * @param size 페이지 당 요청 숫자 (기본 1000)
     */
-    public async Karaoke(page = 1, size = 1000): Promise<object[]> {
-
-        let result: object[] = [];
+    public async Karaoke(page = 1, size = 1000): Promise<APIScheme.GyeonggiAPIResponseKaraoke[]> {
+        let result: APIScheme.GyeonggiAPIResponseKaraoke[] = [];
         try {
             let res = await Axios.get(`https://openapi.gg.go.kr/sngrumIndutype?KEY=${this.key}&type=json&pIndex=${page}&pSize=${size}`);
             result = res.data["sngrumIndutype"][1]["row"];
@@ -97,8 +97,8 @@ export default class GetPlaceFromPublicAPI {
      * @param page 페이지 위치 (기본 1)
      * @param size 페이지 당 요청 숫자 (기본 1000)
      */
-    public async Academy(page = 1, size = 1000): Promise<object[]> {
-        let result: object[] = [];
+    public async Academy(page = 1, size = 1000): Promise<APIScheme.GyeonggiAPIResponseAcademy[]> {
+        let result: APIScheme.GyeonggiAPIResponseAcademy[] = [];
         try {
             let res = await Axios.get(`https://openapi.gg.go.kr/TninsttInstutM?KEY=${this.key}&type=json&pIndex=${page}&pSize=${size}`);
             result = res.data["Tbinstutm"][1]["row"];
@@ -114,8 +114,8 @@ export default class GetPlaceFromPublicAPI {
      * @param page 페이지 위치 (기본 1)
      * @param size 페이지 당 요청 숫자 (기본 1000)
      */
-    public async MovieTheater(page = 1, size = 1000): Promise<object[]> {
-        let result: object[] = [];
+    public async MovieTheater(page = 1, size = 1000): Promise<APIScheme.GyeonggiAPIResponseMovieTheater[]> {
+        let result: APIScheme.GyeonggiAPIResponseMovieTheater[] = [];
         try {
             let res = await Axios.get(`https://openapi.gg.go.kr/MovieTheater?KEY=${this.key}&type=json&pIndex=${page}&pSize=${size}`);
             result = res.data["MovieTheater"][1]["row"];
@@ -131,8 +131,8 @@ export default class GetPlaceFromPublicAPI {
      * @param page 페이지 위치 (기본 1)
      * @param size 페이지 당 요청 숫자 (기본 1000)
      */
-    public async Theater(page = 1, size = 1000): Promise<object[]> {
-        let result: object[] = [];
+    public async Theater(page = 1, size = 1000): Promise<APIScheme.GyeonggiAPIResponseTheater[]> {
+        let result: APIScheme.GyeonggiAPIResponseTheater[] = [];
         try {
             let res = await Axios.get(`https://openapi.gg.go.kr/PerformPlace?KEY=${this.key}&type=json&pIndex=${page}&pSize=${size}`);
             result = res.data["PerformPlace"][1]["row"];
