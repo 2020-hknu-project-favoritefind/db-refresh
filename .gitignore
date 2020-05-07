@@ -5,4 +5,4 @@ node_modules/
 password.ts
 
 # 테스트 케이스
-TestCase.ts
+Test*
