@@ -17,7 +17,7 @@ interface GyeonggiAPIResponseContact {
 }
 
 interface GyeonggiAPIResponseTelNo {
-    LOCPLC_FACTL_TELNO: string
+    LOCPLC_FACLT_TELNO: string
 }
 
 interface GyeonggiAPIResponseFacility {
