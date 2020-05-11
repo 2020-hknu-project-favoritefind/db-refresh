@@ -1,4 +1,4 @@
-import Axios from "axios";
+import Axios, { AxiosResponse } from "axios";
 import * as APIScheme from "./ApiInterface"
 
 export class GetPlaceFromPublicAPI {
@@ -17,7 +17,7 @@ export class GetPlaceFromPublicAPI {
         let result: APIScheme.GyeonggiAPIResponsePublicSports[] = [];
         try {
             let res = await Axios.get(`https://openapi.gg.go.kr/PublicLivelihood?KEY=${this.key}&Type=json&pIndex=${page}&pSize=${size}`);
-            result = res.data["PublicLivelihood"][1]["row"];
+            result.push(res.data["PublicLivelihood"][1]["row"]);
         } catch (error) {
             console.error(error);
         } finally {
