@@ -1,5 +1,5 @@
 import Axios, { AxiosResponse } from "axios";
-import * as APIScheme from "./ApiInterface"
+import { GyeonggiAPIResponse, GyeonggiAPIResponseAcademy } from "./ApiInterface"
 
 export class GetPlaceFromPublicAPI {
     private key: string;
@@ -8,16 +8,29 @@ export class GetPlaceFromPublicAPI {
         this.key = key;
     }
 
-    /**
-     * 경기데이터드림 - [공공체육시설현황(생활)](https://data.gg.go.kr/portal/data/service/selectServicePage.do?page=1&rows=10&sortColumn=&sortDirection=&infId=C2V7PT97153860SH50324475843&infSeq=1)
-     * @param page 페이지 위치 (기본 1)
-     * @param size 페이지 당 요청 숫자 (기본 1000)
-     */
-    public async PublicSportFacility(page = 1, size = 1000): Promise<APIScheme.GyeonggiAPIResponsePublicSports[]> {
-        let result: APIScheme.GyeonggiAPIResponsePublicSports[] = [];
+    public async PublicSportFacility(): Promise<GyeonggiAPIResponse[]> {
+        let _result: Array<any> = [];
+        let result: Array<GyeonggiAPIResponse> = [];
         try {
-            let res = await Axios.get(`https://openapi.gg.go.kr/PublicLivelihood?KEY=${this.key}&Type=json&pIndex=${page}&pSize=${size}`);
-            result.push(res.data["PublicLivelihood"][1]["row"]);
+            let res: any = await Axios.get(`https://openapi.gg.go.kr/PublicLivelihood?KEY=${this.key}&Type=json&pIndex=1&pSize=1000`);
+            _result = res.data["PublicLivelihood"][1]["row"];
+
+            _result.forEach(i => {
+                if (i["FACLT_NM"] != null) {
+                    result.push({
+                        NAME: i["FACLT_NM"],
+                        ADDRESS: {
+                            FULL_ADDRESS: i["REFINE_ROADNM_ADDR"],
+                            ZIP_NUM: i["REFINE_ZIP_CD"],
+                            PROVINCE: getProvinceFromAddress(i["REFINE_ROADNM_ADDR"]),
+                            CITY: i["SIGUN_NM"],
+                            LATITUDE: i["REFINE_WGS84_LAT"],
+                            LONGITUDE: i["REFINE_WGS84_LOGT"]
+                        },
+                        TELEPHONE_NUM: i["CONTACT_NO"]
+                    });
+                }
+            });
         } catch (error) {
             console.error(error);
         } finally {
@@ -25,16 +38,28 @@ export class GetPlaceFromPublicAPI {
         }
     }
 
-    /**
-     * 경기데이터드림 - [체육도장업체현황_인허가](https://data.gg.go.kr/portal/data/service/selectServicePage.do?page=1&sortColumn=&sortDirection=&infId=M9L8CJ5197ZGJ7G86014712182&infSeq=1)
-     * @param page 페이지 위치 (기본 1)
-     * @param size 페이지 당 요청 숫자 (기본 1000)
-     */
-    public async PhysicalTrainingCentre(page = 1, size = 1000): Promise<APIScheme.GyeonggiAPIResponsePhysicalTraining[]> {
-        let result: APIScheme.GyeonggiAPIResponsePhysicalTraining[] = [];
+    public async PhysicalTrainingCentre(): Promise<GyeonggiAPIResponse[]> {
+        let _result: any[] = [];
+        let result: GyeonggiAPIResponse[] = [];
         try {
-            let res = await Axios.get(`https://openapi.gg.go.kr/PhysicalTraining?KEY=${this.key}&type=json&pIndex=${page}&pSize=${size}`);
-            result = res.data["PhysicalTraining"][1]["row"];
+            let res = await Axios.get(`https://openapi.gg.go.kr/PhysicalTraining?KEY=${this.key}&type=json&pIndex=1&pSize=1000`);
+            _result = res.data["PhysicalTraining"][1]["row"];
+            _result.forEach(i => {
+                if (i["BIZPLC_NM"] != null) {
+                    result.push({
+                        NAME: i["BIZPLC_NM"],
+                        ADDRESS: {
+                            FULL_ADDRESS: i["REFINE_ROADNM_ADDR"],
+                            ZIP_NUM: i["REFINE_ZIP_CD"],
+                            PROVINCE: getProvinceFromAddress(i["REFINE_ROADNM_ADDR"]),
+                            CITY: i["SIGUN_NM"],
+                            LATITUDE: i["REFINE_WGS84_LAT"],
+                            LONGITUDE: i["REFINE_WGS84_LOGT"]
+                        },
+                        TELEPHONE_NUM: i["CONTACT_NO"]
+                    })
+                }
+            })
         } catch (error) {
             console.error(error);
         } finally {
@@ -42,16 +67,29 @@ export class GetPlaceFromPublicAPI {
         }
     }
 
-    /**
-     * 경기데이터드림 - [낚시터 정보](https://data.gg.go.kr/portal/data/service/selectServicePage.do?page=1&sortColumn=&sortDirection=&infId=8M2AW008ZZ275DEX8997536167&infSeq=1)
-     * @param page 페이지 위치 (기본 1)
-     * @param size 페이지 당 요청 숫자 (기본 1000)
-     */
-    public async FishingCentre(page = 1, size = 1000): Promise<APIScheme.GyeonggiAPIResponseFishing[]> {
-        let result: APIScheme.GyeonggiAPIResponseFishing[] = [];
+    public async FishingCentre(): Promise<GyeonggiAPIResponse[]> {
+        let _result: any[] = [];
+        let result: GyeonggiAPIResponse[] = [];
         try {
-            let res = await Axios.get(`https://openapi.gg.go.kr/FISHPLCINFO?KEY=${this.key}&type=json&pIndex=${page}&pSize=${size}`);
-            result = res.data["FISHPLCINFO"][1]["row"];
+            let res = await Axios.get(`https://openapi.gg.go.kr/FISHPLCINFO?KEY=${this.key}&type=json&pIndex=1&pSize=1000`);
+            _result = res.data["FISHPLCINFO"][1]["row"];
+
+            _result.forEach(i => {
+                if (i["FISHPLC_NM"] != null) {
+                    result.push({
+                        NAME: i["FISHPLC_NM"],
+                        ADDRESS: {
+                            FULL_ADDRESS: i["REFINE_ROADNM_ADDR"],
+                            ZIP_NUM: i["REFINE_ZIP_CD"],
+                            PROVINCE: getProvinceFromAddress(i["REFINE_ROADNM_ADDR"]),
+                            CITY: i["SIGUN_NM"],
+                            LATITUDE: i["REFINE_WGS84_LAT"],
+                            LONGITUDE: i["REFINE_WGS84_LOGT"]
+                        },
+                        TELEPHONE_NUM: "null"
+                    })
+                }
+            })
         } catch (error) {
             console.error(error);
         } finally {
@@ -59,32 +97,29 @@ export class GetPlaceFromPublicAPI {
         }
     }
 
-    /**
-     * 경기데이터드림 - [무도학원업체 현황_인허가](https://data.gg.go.kr/portal/data/service/selectServicePage.do?page=1&sortColumn=&sortDirection=&infId=AHRHFPPD5ML4B38Y68C01854844&infSeq=1)
-     * @param page 페이지 위치 (기본 1)
-     * @param size 페이지 당 요청 숫자 (기본 1000)
-     */
-    public async DanceAcademy(page = 1, size = 1000): Promise<APIScheme.GyeonggiAPIResponseDancingAcademy[]> {
-        let result: APIScheme.GyeonggiAPIResponseDancingAcademy[] = [];
+    public async DanceAcademy(): Promise<GyeonggiAPIResponse[]> {
+        let _result: any[] = []
+        let result: GyeonggiAPIResponse[] = [];
         try {
-            let res = await Axios.get(`https://openapi.gg.go.kr/DanceAcademy?KEY=${this.key}&type=json&pIndex=${page}&pSize=${size}`);
-            result = res.data["DanceAcademy"][1]["row"];
-        } catch (error) {
-            console.error(error);
-        } finally {
-            return result;
-        }
-    }
-    /** 
-     * 경기데이터드림 - [노래연습장업_인허가](https://data.gg.go.kr/portal/data/service/selectServicePage.do?page=1&sortColumn=&sortDirection=&infId=DTG5WLA687OMHJMFRXH627862292&infSeq=1)
-     * @param page 페이지 위치 (기본 1)
-     * @param size 페이지 당 요청 숫자 (기본 1000)
-    */
-    public async Karaoke(page = 1, size = 1000): Promise<APIScheme.GyeonggiAPIResponseKaraoke[]> {
-        let result: APIScheme.GyeonggiAPIResponseKaraoke[] = [];
-        try {
-            let res = await Axios.get(`https://openapi.gg.go.kr/sngrumIndutype?KEY=${this.key}&type=json&pIndex=${page}&pSize=${size}`);
-            result = res.data["sngrumIndutype"][1]["row"];
+            let res = await Axios.get(`https://openapi.gg.go.kr/DanceAcademy?KEY=${this.key}&type=json&pIndex=1&pSize=1000`);
+            _result = res.data["DanceAcademy"][1]["row"];
+
+            _result.forEach(i => {
+                if (i["BIZPLC_NM"] != null) {
+                    result.push({
+                        NAME: i["BIZPLC_NM"],
+                        ADDRESS: {
+                            FULL_ADDRESS: i["REFINE_ROADNM_ADDR"],
+                            ZIP_NUM: i["REFINE_ZIP_CD"],
+                            PROVINCE: getProvinceFromAddress(i["REFINE_ROADNM_ADDR"]),
+                            CITY: i["SIGUN_NM"],
+                            LATITUDE: i["REFINE_WGS84_LAT"],
+                            LONGITUDE: i["REFINE_WGS84_LOGT"]
+                        },
+                        TELEPHONE_NUM: i["LOCPLC_FACTL_TELNO"]
+                    })
+                }
+            })
         } catch (error) {
             console.error(error);
         } finally {
@@ -92,16 +127,60 @@ export class GetPlaceFromPublicAPI {
         }
     }
 
-    /**
-     * 경기데이터드림 - [학원및 교습소 현황](https://data.gg.go.kr/portal/data/service/selectServicePage.do?page=1&rows=10&sortColumn=&sortDirection=&infId=POQF9EVK5RB8XOPTEH3D21077469&infSeq=1)
-     * @param page 페이지 위치 (기본 1)
-     * @param size 페이지 당 요청 숫자 (기본 1000)
-     */
-    public async Academy(page = 1, size = 1000): Promise<APIScheme.GyeonggiAPIResponseAcademy[]> {
-        let result: APIScheme.GyeonggiAPIResponseAcademy[] = [];
+    public async Karaoke(): Promise<GyeonggiAPIResponse[]> {
+        let _result: any[] = [];
+        let result: GyeonggiAPIResponse[] = [];
         try {
-            let res = await Axios.get(`https://openapi.gg.go.kr/TninsttInstutM?KEY=${this.key}&type=json&pIndex=${page}&pSize=${size}`);
-            result = res.data["Tbinstutm"][1]["row"];
+            let res = await Axios.get(`https://openapi.gg.go.kr/sngrumIndutype?KEY=${this.key}&type=json&pIndex=1&pSize=1000`);
+            _result = res.data["sngrumIndutype"][1]["row"];
+
+            _result.forEach(i => {
+                if (i["BIZPLC_NM"] != null) {
+                    result.push({
+                        NAME: i["BIZPLC_NM"],
+                        ADDRESS: {
+                            FULL_ADDRESS: i["REFINE_ROADNM_ADDR"],
+                            ZIP_NUM: i["REFINE_ZIP_CD"],
+                            PROVINCE: getProvinceFromAddress(i["REFINE_ROADNM_ADDR"]),
+                            CITY: i["SIGUN_NM"],
+                            LATITUDE: i["REFINE_WGS84_LAT"],
+                            LONGITUDE: i["REFINE_WGS84_LOGT"]
+                        },
+                        TELEPHONE_NUM: i["LOCPLC_FACTL_TELNO"]
+                    })
+                }
+            })
+        } catch (error) {
+            console.error(error);
+        } finally {
+            return result;
+        }
+    }
+
+    public async Academy(classname: string): Promise<GyeonggiAPIResponseAcademy[]> {
+        let _result: any[] = [];
+        let result: GyeonggiAPIResponseAcademy[] = [];
+        try {
+            let res = await Axios.get(`https://openapi.gg.go.kr/TninsttInstutM?KEY=${this.key}&type=json&pIndex=1&pSize=1000`);
+            _result = res.data["TninsttInstutM"][1]["row"];
+
+            _result.forEach(i => {
+                if (i["FACLT_NM"] != null && (i["CRSE_CLASS_NM"].indexOf(classname) != -1 || i["FACLT_NM"].indexOf(classname) != -1)) {
+                    result.push({
+                        NAME: i["FACLT_NM"],
+                        ADDRESS: {
+                            FULL_ADDRESS: i["REFINE_ROADNM_ADDR"],
+                            ZIP_NUM: i["REFINE_ZIP_CD"],
+                            PROVINCE: getProvinceFromAddress(i["REFINE_ROADNM_ADDR"]),
+                            CITY: i["SIGUN_NM"],
+                            LATITUDE: i["REFINE_WGS84_LAT"],
+                            LONGITUDE: i["REFINE_WGS84_LOGT"]
+                        },
+                        TELEPHONE_NUM: i["TELNO"],
+                        CLASSNAME: i["CRSE_CLASS_NM"]
+                    })
+                }
+            })
         } catch (error) {
             console.error(error)
         } finally {
@@ -109,16 +188,29 @@ export class GetPlaceFromPublicAPI {
         }
     }
 
-    /**
-     * 경기데이터드림 - [영화 상영관 현황_인허가](https://data.gg.go.kr/portal/data/service/selectServicePage.do?page=1&rows=10&sortColumn=&sortDirection=&infId=W4X5359M8398463DP26M1395912&infSeq=1)
-     * @param page 페이지 위치 (기본 1)
-     * @param size 페이지 당 요청 숫자 (기본 1000)
-     */
-    public async MovieTheater(page = 1, size = 1000): Promise<APIScheme.GyeonggiAPIResponseMovieTheater[]> {
-        let result: APIScheme.GyeonggiAPIResponseMovieTheater[] = [];
+    public async MovieTheater(): Promise<GyeonggiAPIResponse[]> {
+        let _result: any[] = [];
+        let result: GyeonggiAPIResponse[] = [];
         try {
-            let res = await Axios.get(`https://openapi.gg.go.kr/MovieTheater?KEY=${this.key}&type=json&pIndex=${page}&pSize=${size}`);
-            result = res.data["MovieTheater"][1]["row"];
+            let res = await Axios.get(`https://openapi.gg.go.kr/MovieTheater?KEY=${this.key}&type=json&pIndex=1&pSize=1000`);
+            _result = res.data["MovieTheater"][1]["row"];
+
+            _result.forEach(i => {
+                if (i["BIZPLC_NM"] != null) {
+                    result.push({
+                        NAME: i["BIZPLC_NM"],
+                        ADDRESS: {
+                            FULL_ADDRESS: i["REFINE_ROADNM_ADDR"],
+                            ZIP_NUM: i["REFINE_ZIP_CD"],
+                            PROVINCE: getProvinceFromAddress(i["REFINE_ROADNM_ADDR"]),
+                            CITY: i["SIGUN_NM"],
+                            LATITUDE: i["REFINE_WGS84_LAT"],
+                            LONGITUDE: i["REFINE_WGS84_LOGT"]
+                        },
+                        TELEPHONE_NUM: "null",
+                    })
+                }
+            })
         } catch (error) {
             console.error(error);
         } finally {
@@ -126,20 +218,38 @@ export class GetPlaceFromPublicAPI {
         }
     }
 
-    /**
-     * 경기데이터드림 - [공연장 현황_인허가](https://data.gg.go.kr/portal/data/service/selectServicePage.do?page=1&sortColumn=&sortDirection=&infId=N4LY6H5VP5047641W5DQ1742165&infSeq=1)
-     * @param page 페이지 위치 (기본 1)
-     * @param size 페이지 당 요청 숫자 (기본 1000)
-     */
-    public async Theater(page = 1, size = 1000): Promise<APIScheme.GyeonggiAPIResponseTheater[]> {
-        let result: APIScheme.GyeonggiAPIResponseTheater[] = [];
+    public async Theater(): Promise<GyeonggiAPIResponse[]> {
+        let _result: any[] = [];
+        let result: GyeonggiAPIResponse[] = [];
         try {
-            let res = await Axios.get(`https://openapi.gg.go.kr/PerformPlace?KEY=${this.key}&type=json&pIndex=${page}&pSize=${size}`);
-            result = res.data["PerformPlace"][1]["row"];
+            let res = await Axios.get(`https://openapi.gg.go.kr/PerformPlace?KEY=${this.key}&type=json&pIndex=1&pSize=1000`);
+            _result = res.data["PerformPlace"][1]["row"];
+
+            _result.forEach(i => {
+                if (i["BIZPLC_NM"] != null) {
+                    result.push({
+                        NAME: i["BIZPLC_NM"],
+                        ADDRESS: {
+                            FULL_ADDRESS: i["REFINE_ROADNM_ADDR"],
+                            ZIP_NUM: i["REFINE_ZIP_CD"],
+                            PROVINCE: getProvinceFromAddress(i["REFINE_ROADNM_ADDR"]),
+                            CITY: i["SIGUN_NM"],
+                            LATITUDE: i["REFINE_WGS84_LAT"],
+                            LONGITUDE: i["REFINE_WGS84_LOGT"]
+                        },
+                        TELEPHONE_NUM: "null",
+                    })
+                }
+            })
         } catch (error) {
             console.error(error);
         } finally {
             return result;
         }
     }
+}
+
+function getProvinceFromAddress(address: string): string {
+    let result = /^\S*도/.exec(address);
+    if (result) { return result[0] } else { return "" }
 }
